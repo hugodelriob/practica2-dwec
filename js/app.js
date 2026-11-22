@@ -8,12 +8,12 @@ const catalogo = [
     new Producto(107, "Silla ergonómica", "oficina", 99.99, 2),
     new Producto(108, "Pack de bolígrafos", "oficina", 4.5, 1)
 ];
-const carrito = []; //{productoId: 100, cantidad: 1}
+const carrito = [];
 const pedidos = [];
 
 function calcularSubtotal(carrito, catalogo) {
     let subtotal = 0;
-    for(const producto of carrito) {
+    for (const producto of carrito) {
         const prod = catalogo.find(p => p.id === producto.productoId);
         subtotal = subtotal + prod.precio * producto.cantidad;
     }
@@ -28,7 +28,7 @@ function calcularDescuento(subtotal, porcentaje = 0) {
             porcentaje = 0;
         }
         return porcentaje / 100 * subtotal;
-    }  else {
+    } else {
         return null;
     }
 }
@@ -66,4 +66,29 @@ function validarDatosPedido(datos) {
         errores.push('Se ha superado el número máximo de carácteres para el campo "observaciones"');
     }
     return errores;
+}
+
+function validarCarrito(carrito, catalogo) {
+    const lineasValidas = [];
+    if (carrito.length !== 0) {
+        for (const producto of carrito) {
+            const prod = catalogo.find(p => p.id === producto.productoId);
+            if (prod === undefined) {
+                lineasValidas.push({productoId: producto.productoId, valida: false,  error: 'Id no válido'});
+            } else {
+                if (Number.isInteger(producto.cantidad) && producto.cantidad > 0) {
+                    if (prod.comprobarDisponibilidad(producto.cantidad)) {
+                        lineasValidas.push({productoId: producto.productoId, valida: true, error: ''});
+                    } else {
+                        lineasValidas.push({productoId: producto.productoId, valida: false, error: 'Stock insuficiente'});
+                    }
+                } else {
+                    lineasValidas.push({productoId: producto.productoId, valida: false, error: 'Cantidad no válida'});
+                }
+            }
+        }
+    } else {
+        return null;
+    }
+    return lineasValidas;
 }

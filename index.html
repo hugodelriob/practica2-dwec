@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestor de pedidos de material</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Gestor de pedidos de material</h1>
+    <p id="mensajeGlobal" role="status" aria-live="polite"></p>
+  </header>
+
+  <main>
+    <!-- CATÁLOGO -->
+    <section id="catalogo" aria-labelledby="titulo-catalogo">
+      <h2 id="titulo-catalogo">Catálogo de productos</h2>
+
+      <form id="formFiltros" novalidate>
+        <label for="buscador">Buscar por nombre</label>
+        <input type="search" id="buscador" name="buscador" placeholder="Ej.: ratón">
+
+        <label for="filtroCategoria">Categoría</label>
+        <select id="filtroCategoria" name="categoria">
+          <option value="todas">Todas</option>
+          <option value="perifericos">Periféricos</option>
+          <option value="almacenamiento">Almacenamiento</option>
+          <option value="oficina">Oficina</option>
+        </select>
+      </form>
+
+      <p id="sinResultadosCatalogo" hidden>No se han encontrado productos con esos criterios.</p>
+      <div id="listaProductos"></div>
+    </section>
+
+    <!-- CARRITO -->
+    <section id="carritoSeccion" aria-labelledby="titulo-carrito">
+      <h2 id="titulo-carrito">Carrito</h2>
+
+      <p id="carritoVacio">El carrito está vacío.</p>
+      <div id="listaCarrito"></div>
+
+      <dl id="resumenCarrito">
+        <dt>Total de unidades</dt>
+        <dd id="totalUnidades">0</dd>
+        <dt>Subtotal</dt>
+        <dd id="subtotal">0.00 €</dd>
+        <dt>Descuento</dt>
+        <dd id="descuento">0.00 €</dd>
+        <dt>Total</dt>
+        <dd id="total">0.00 €</dd>
+      </dl>
+    </section>
+
+    <!-- FORMULARIO DE PEDIDO -->
+    <section id="pedidoSeccion" aria-labelledby="titulo-pedido">
+      <h2 id="titulo-pedido">Confirmar pedido</h2>
+
+      <form id="formPedido" novalidate>
+        <div>
+          <label for="nombre">Nombre y apellidos</label>
+          <input type="text" id="nombre" name="nombre" required minlength="2" maxlength="60"
+                 autocomplete="name" aria-describedby="error-nombre">
+          <span class="error" id="error-nombre" role="alert"></span>
+        </div>
+
+        <div>
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" name="email" required
+                 autocomplete="email" aria-describedby="error-email">
+          <span class="error" id="error-email" role="alert"></span>
+        </div>
+
+        <fieldset id="fieldsetEntrega">
+          <legend>Modalidad de entrega</legend>
+          <label for="entregaRecogida">
+            <input type="radio" id="entregaRecogida" name="entrega" value="recogida" checked>
+            Recogida
+          </label>
+          <label for="entregaEnvio">
+            <input type="radio" id="entregaEnvio" name="entrega" value="envio">
+            Envío
+          </label>
+          <span class="error" id="error-entrega" role="alert"></span>
+        </fieldset>
+
+        <fieldset id="datosEnvio" hidden>
+          <legend>Datos de envío</legend>
+          <div>
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion" minlength="5" maxlength="100"
+                   autocomplete="street-address" aria-describedby="error-direccion">
+            <span class="error" id="error-direccion" role="alert"></span>
+          </div>
+          <div>
+            <label for="codigoPostal">Código postal</label>
+            <input type="text" id="codigoPostal" name="codigoPostal" inputmode="numeric"
+                   maxlength="5" autocomplete="postal-code" aria-describedby="error-codigoPostal">
+            <span class="error" id="error-codigoPostal" role="alert"></span>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="observaciones">Observaciones (opcional)</label>
+          <textarea id="observaciones" name="observaciones" rows="3" maxlength="200"
+                    aria-describedby="contadorObservaciones error-observaciones"></textarea>
+          <small id="contadorObservaciones">0 / 200</small>
+          <span class="error" id="error-observaciones" role="alert"></span>
+        </div>
+
+        <div>
+          <label for="aceptacion">
+            <input type="checkbox" id="aceptacion" name="aceptacion" required
+                   aria-describedby="error-aceptacion">
+            Confirmo que los datos del pedido son correctos
+          </label>
+          <span class="error" id="error-aceptacion" role="alert"></span>
+        </div>
+
+        <button type="submit" id="btnConfirmar">Confirmar pedido</button>
+      </form>
+    </section>
+
+    <!-- HISTORIAL -->
+    <section id="historialSeccion" aria-labelledby="titulo-historial">
+      <h2 id="titulo-historial">Historial de pedidos</h2>
+
+      <label for="filtroEntrega">Filtrar por modalidad</label>
+      <select id="filtroEntrega" name="filtroEntrega">
+        <option value="todos">Todos</option>
+        <option value="recogida">Recogida</option>
+        <option value="envio">Envío</option>
+      </select>
+
+      <p id="resumenHistorial">Pedidos: <span id="numPedidos">0</span> · Importe total: <span id="sumaPedidos">0.00 €</span></p>
+
+      <p id="historialVacio">No hay pedidos que mostrar.</p>
+      <div id="listaPedidos"></div>
+
+      <button type="button" id="btnExportar">Exportar historial</button>
+      <label for="salidaJson">JSON del historial</label>
+      <textarea id="salidaJson" rows="10" readonly></textarea>
+    </section>
+  </main>
+</body>
+</html>
