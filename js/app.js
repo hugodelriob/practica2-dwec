@@ -74,16 +74,16 @@ function validarCarrito(carrito, catalogo) {
         for (const producto of carrito) {
             const prod = catalogo.find(p => p.id === producto.productoId);
             if (prod === undefined) {
-                lineasValidas.push({productoId: producto.productoId, valida: false,  error: 'Id no válido'});
+                lineasValidas.push({ productoId: producto.productoId, valida: false, error: 'Id no válido' });
             } else {
                 if (Number.isInteger(producto.cantidad) && producto.cantidad > 0) {
                     if (prod.comprobarDisponibilidad(producto.cantidad)) {
-                        lineasValidas.push({productoId: producto.productoId, valida: true, error: ''});
+                        lineasValidas.push({ productoId: producto.productoId, valida: true, error: '' });
                     } else {
-                        lineasValidas.push({productoId: producto.productoId, valida: false, error: 'Stock insuficiente'});
+                        lineasValidas.push({ productoId: producto.productoId, valida: false, error: 'Stock insuficiente' });
                     }
                 } else {
-                    lineasValidas.push({productoId: producto.productoId, valida: false, error: 'Cantidad no válida'});
+                    lineasValidas.push({ productoId: producto.productoId, valida: false, error: 'Cantidad no válida' });
                 }
             }
         }
@@ -91,4 +91,53 @@ function validarCarrito(carrito, catalogo) {
         return null;
     }
     return lineasValidas;
+}
+
+function crearTarjetaProducto(producto) {
+    const tarjeta = document.createElement("article");
+    tarjeta.classList.add("tarjeta-producto");
+    tarjeta.dataset.productoId = producto.id;
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = producto.nombre;
+
+    const categoria = document.createElement("p");
+    categoria.textContent = `Categoría: ${producto.categoria}`;
+
+    const precio = document.createElement("p");
+    precio.textContent = `Precio: ${producto.precio.toFixed(2)} €`;
+
+    const existencias = document.createElement("p");
+    existencias.textContent = producto.stock > 0
+        ? `Existencias: ${producto.stock}`
+        : "Agotado";
+
+    const idCantidad = `cantidad-${producto.id}`;
+
+    const etiqueta = document.createElement("label");
+    etiqueta.htmlFor = idCantidad;
+    etiqueta.textContent = "Cantidad";
+
+    const inputCantidad = document.createElement("input");
+    inputCantidad.type = "number";
+    inputCantidad.id = idCantidad;
+    inputCantidad.min = "1";
+    inputCantidad.max = String(producto.stock);
+    inputCantidad.step = "1";
+    inputCantidad.value = "1";
+    inputCantidad.required = true;
+
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.classList.add("btn-anadir");
+    boton.dataset.productoId = producto.id;
+    boton.textContent = "Añadir al carrito";
+
+    if (producto.stock === 0) {
+        inputCantidad.disabled = true;
+        boton.disabled = true;
+    }
+
+    tarjeta.append(titulo, categoria, precio, existencias, etiqueta, inputCantidad, boton);
+    return tarjeta;
 }
